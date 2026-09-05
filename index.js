@@ -3,10 +3,17 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Απενεργοποίηση του HSTS header για να μην εξαναγκάζει HTTPS
+app.use((req, res, next) => {
+  res.removeHeader('Strict-Transport-Security');
+  next();
+});
+
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxSgGKwFKwgCjaTGakyTdlAht8ebFQ8vp7ku6BaaBlJ_mdUjsM-avYfMHTpAUGHXyUB/exec";
+
 app.get('/wake-times', async (req, res) => {
   try {
-    const googleUrl = "https://script.google.com/macros/s/AKfycbxSgGKwFKwgCjaTGakyTdlAht8ebFQ8vp7ku6BaaBlJ_mdUjsM-avYfMHTpAUGHXyUB/exec";
-    const response = await axios.get(googleUrl);
+    const response = await axios.get(GOOGLE_SHEET_URL);
     res.setHeader('Content-Type', 'text/plain');
     res.status(200).send(response.data);
   } catch (error) {
